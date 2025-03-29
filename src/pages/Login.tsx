@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { GithubIcon } from "lucide-react";
+import { GithubIcon, ArrowLeft } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -89,17 +90,30 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-slate-900 px-4 transition-colors duration-300">
+      <div className="absolute top-4 left-4 flex space-x-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate('/')}
+          className="rounded-full"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span className="sr-only">Back to home</span>
+        </Button>
+        <ThemeToggle />
+      </div>
+      
+      <Card className="w-full max-w-md shadow-lg border-gray-200 dark:border-gray-800 dark:bg-slate-800 dark:text-gray-100 transition-colors duration-300">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-2xl font-bold text-center">Sign In to SupplyChain</CardTitle>
+          <CardDescription className="text-center dark:text-gray-300">
             Enter your credentials to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           {errors.general && (
-            <div className="mb-4 p-2 bg-red-50 border border-red-300 text-red-700 rounded">
+            <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 rounded">
               {errors.general}
             </div>
           )}
@@ -112,15 +126,15 @@ const Login = () => {
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={errors.email ? "border-red-500" : ""}
+                className={`${errors.email ? "border-red-500" : ""} dark:bg-slate-900 dark:border-gray-700`}
                 disabled={loading}
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-red-500 dark:text-red-400">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link to="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -130,14 +144,14 @@ const Login = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={errors.password ? "border-red-500" : ""}
+                className={`${errors.password ? "border-red-500" : ""} dark:bg-slate-900 dark:border-gray-700`}
                 disabled={loading}
               />
-              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-red-500 dark:text-red-400">{errors.password}</p>}
             </div>
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign In"}
@@ -147,10 +161,10 @@ const Login = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <Separator />
+                <Separator className="dark:bg-gray-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                <span className="bg-white dark:bg-slate-800 px-2 text-gray-500 dark:text-gray-400">Or continue with</span>
               </div>
             </div>
 
@@ -158,7 +172,7 @@ const Login = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full border-gray-300"
+                className="w-full border-gray-300 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-slate-700 transition-colors"
                 onClick={handleGithubLogin}
                 disabled={loading}
               >
@@ -168,7 +182,7 @@ const Login = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full border-gray-300"
+                className="w-full border-gray-300 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-slate-700 transition-colors"
                 onClick={() => navigate('/phone-login')}
                 disabled={loading}
               >
@@ -178,9 +192,9 @@ const Login = () => {
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-600 hover:underline">
+            <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:underline">
               Sign up
             </Link>
           </span>

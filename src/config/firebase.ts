@@ -15,4 +15,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// Configure persistence and timeout settings for better user experience
+auth.setPersistence('local');
+
+// Export the Firebase app instance
 export default app;
