@@ -1,6 +1,6 @@
 
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, browserLocalPersistence } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 // Configure persistence and timeout settings for better user experience
-auth.setPersistence('local');
+auth.setPersistence(browserLocalPersistence);
 
 // Export the Firebase app instance
 export default app;
