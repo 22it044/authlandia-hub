@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ConfirmationResult } from "firebase/auth";
+import { ArrowLeft, Phone, KeyRound } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const PhoneLogin = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -109,11 +111,33 @@ const PhoneLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-slate-900 px-4 transition-colors duration-300">
+      <div className="absolute top-4 left-4 flex space-x-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate('/login')}
+          className="rounded-full"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span className="sr-only">Back to login</span>
+        </Button>
+        <ThemeToggle />
+      </div>
+      
+      <Card className="w-full max-w-md shadow-lg border-gray-200 dark:border-gray-800 dark:bg-slate-800 dark:text-gray-100 transition-colors duration-300">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Phone Authentication</CardTitle>
-          <CardDescription className="text-center">
+          <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 mb-2">
+            {verificationSent ? (
+              <KeyRound className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            ) : (
+              <Phone className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            )}
+          </div>
+          <CardTitle className="text-2xl font-bold text-center">
+            {verificationSent ? "Verify OTP" : "Phone Authentication"}
+          </CardTitle>
+          <CardDescription className="text-center dark:text-gray-300">
             {verificationSent 
               ? "Enter the verification code sent to your phone" 
               : "Enter your phone number to receive a verification code"}
@@ -121,7 +145,7 @@ const PhoneLogin = () => {
         </CardHeader>
         <CardContent>
           {errors.general && (
-            <div className="mb-4 p-2 bg-red-50 border border-red-300 text-red-700 rounded">
+            <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 rounded">
               {errors.general}
             </div>
           )}
@@ -136,17 +160,17 @@ const PhoneLogin = () => {
                   placeholder="+1234567890"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className={errors.phoneNumber ? "border-red-500" : ""}
+                  className={`${errors.phoneNumber ? "border-red-500" : ""} dark:bg-slate-900 dark:border-gray-700`}
                   disabled={loading}
                 />
-                {errors.phoneNumber && <p className="text-sm text-red-500">{errors.phoneNumber}</p>}
+                {errors.phoneNumber && <p className="text-sm text-red-500 dark:text-red-400">{errors.phoneNumber}</p>}
               </div>
               
               <div id="recaptcha-container" className="flex justify-center my-4"></div>
               
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
                 disabled={loading}
               >
                 {loading ? "Sending code..." : "Send Verification Code"}
@@ -156,22 +180,28 @@ const PhoneLogin = () => {
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp">Verification Code</Label>
-                <Input
-                  id="otp"
-                  type="text"
-                  placeholder="123456"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className={errors.otp ? "border-red-500" : ""}
-                  disabled={loading}
-                  maxLength={6}
-                />
-                {errors.otp && <p className="text-sm text-red-500">{errors.otp}</p>}
+                <div className="flex justify-center">
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="123456"
+                    value={otp}
+                    onChange={(e) => {
+                      // Only allow numbers and limit to 6 characters
+                      const input = e.target.value.replace(/\D/g, '').substring(0, 6);
+                      setOtp(input);
+                    }}
+                    className={`${errors.otp ? "border-red-500" : ""} text-center tracking-widest text-lg dark:bg-slate-900 dark:border-gray-700`}
+                    disabled={loading}
+                    maxLength={6}
+                  />
+                </div>
+                {errors.otp && <p className="text-sm text-red-500 dark:text-red-400 text-center">{errors.otp}</p>}
               </div>
               
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
                 disabled={loading}
               >
                 {loading ? "Verifying..." : "Verify Code"}
@@ -180,7 +210,7 @@ const PhoneLogin = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-2"
+                className="w-full mt-2 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-slate-700"
                 onClick={() => setVerificationSent(false)}
                 disabled={loading}
               >
@@ -190,8 +220,8 @@ const PhoneLogin = () => {
           )}
         </CardContent>
         <CardFooter className="flex justify-center">
-          <span className="text-sm text-gray-500">
-            <Link to="/login" className="text-blue-600 hover:underline">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
               Back to Sign In
             </Link>
           </span>

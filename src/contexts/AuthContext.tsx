@@ -59,7 +59,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function login(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Check if email is verified for email/password login
+      if (!userCredential.user.emailVerified && 
+          userCredential.user.providerData.some(provider => provider.providerId === 'password')) {
+        await logout();
+        throw new Error("Please verify your email before logging in");
+      }
     } catch (error) {
       console.error("Error logging in:", error);
       throw error;

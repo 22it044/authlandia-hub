@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -8,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { GithubIcon, ArrowLeft } from "lucide-react";
+import { GithubIcon, ArrowLeft, CheckCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Login = () => {
@@ -22,7 +21,7 @@ const Login = () => {
   }>({});
 
   const navigate = useNavigate();
-  const { login, signInWithGithub } = useAuth();
+  const { login, sendVerificationEmail, signInWithGithub } = useAuth();
 
   const validateForm = () => {
     const newErrors: {
@@ -57,14 +56,32 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Login error:", error);
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      if (error.message === "Please verify your email before logging in") {
+        setErrors({ general: "Please verify your email before logging in" });
+        toast.error("Please verify your email before logging in", {
+          action: {
+            label: "Resend Email",
+            onClick: async () => {
+              try {
+                await sendVerificationEmail();
+                toast.success("Verification email resent");
+                navigate("/verify-email");
+              } catch (error) {
+                toast.error("Failed to resend verification email");
+              }
+            },
+          },
+        });
+      } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
         setErrors({ general: "Invalid email or password" });
+        toast.error("Invalid email or password");
       } else if (error.code === "auth/too-many-requests") {
         setErrors({ general: "Too many failed login attempts. Please try again later." });
+        toast.error("Too many failed login attempts");
       } else {
         setErrors({ general: error.message || "Failed to log in" });
+        toast.error("Failed to log in");
       }
-      toast.error("Failed to log in");
     } finally {
       setLoading(false);
     }
